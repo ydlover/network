@@ -99,6 +99,10 @@ def getVpnIp(vpnName):
     return None
 def vpnCreate(vpnIp,username,passwd):
     cmdExe(["pptpsetup" "--create", getVpnName(vpnIp),"--server",vpnIp,"--username" ,username,"--password",passwd, "--encrypt"])
+def autoCreateVpn(vpnIpList,username,passwd):
+    for vpnIp in vpnIpList:
+        vpnCreate(vpnIp,username,passwd)
+        
 def ifconfigParser(cmd,rsltStr):
     isFind = False
     for line in rsltStr.split("\n"):
@@ -205,6 +209,12 @@ if __name__ == '__main__':
         if(sys.argv[1] == "-n"):
             vpnName = sys.argv[2].strip()
             connSelectVpn(vpnName)
+        if(sys.argv[1] == "-c"):
+            username=sys.argv[2]
+            passwd=sys.argv[3]
+            autoCreateVpn(gVpnList,username,passwd)
+        
+        
     else:
         availableVpns=remoteHostTest(gVpnList)
         
